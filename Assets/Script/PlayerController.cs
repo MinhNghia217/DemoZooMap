@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;
             currentMovement.y = nextYVelocity;
             currentRunMovement.y = nextYVelocity;
-            Debug.Log(initialJumpVelocity);
+            
         } else if (!isJumpPressed && isJumping && characterController.isGrounded)
         {
             isJumping = false;
@@ -182,8 +182,10 @@ public class PlayerController : MonoBehaviour
         if(isRunPressed)
         {
             characterController.Move(currentRunMovement * Time.deltaTime);
+            Debug.Log("move-1");
         } else
         {
+            Debug.Log("move-2");
             characterController.Move(currentMovement * Time.deltaTime);    
         }
         handleGravity();
