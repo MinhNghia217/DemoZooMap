@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -37,6 +36,8 @@ public class PlayerController : MonoBehaviour
     bool isJumpingAnimating = false;
 
 
+    public  Transform orientation;
+    public float speed;
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -56,6 +57,11 @@ public class PlayerController : MonoBehaviour
         playerInput.CharacterControls.Jump.canceled += onJump;
 
         setupJumpVariables();
+
+
+
+        Cursor.lockState=CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void setupJumpVariables()
@@ -77,7 +83,9 @@ public class PlayerController : MonoBehaviour
             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;
             currentMovement.y = nextYVelocity;
             currentRunMovement.y = nextYVelocity;
+
             
+
         } else if (!isJumpPressed && isJumping && characterController.isGrounded)
         {
             isJumping = false;
@@ -86,7 +94,7 @@ public class PlayerController : MonoBehaviour
 
     private void handleRotation()
     {
-        Vector3 positionToLookAt;
+        /*Vector3 positionToLookAt;
         positionToLookAt.x = currentMovement.x;
         positionToLookAt.y = 0.0f;
         positionToLookAt.z = currentMovement.z;
@@ -96,6 +104,27 @@ public class PlayerController : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
             transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime);
+        }*/
+
+
+        // L?y góc xoay c?a camera
+
+
+
+        Quaternion cameraRotation = Quaternion.Euler(0f, orientation.rotation.eulerAngles.y, 0f); ;
+        
+
+        // Ch? xoay khi có s? di chuy?n
+        if (isMovementPressed)
+        {
+            // Xác ??nh h??ng di chuy?n d?a trên góc xoay c?a camera
+            Vector3 moveDirection = cameraRotation * new Vector3(currentMovement.x, 0.0f, currentMovement.z);
+
+            // Xác ??nh h??ng nhìn d?a trên h??ng di chuy?n
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+
+            // Xoay nhân v?t theo h??ng nhìn m?i
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationFactorPerFrame * Time.deltaTime);
         }
     }
 
@@ -104,6 +133,9 @@ public class PlayerController : MonoBehaviour
         currentMovementInput = context.ReadValue<Vector2>();
         currentMovement.x = currentMovementInput.x;
         currentMovement.z = currentMovementInput.y;
+
+        //Debug.Log(currentMovement.x + "/" + currentMovement.z);
+
         currentRunMovement.x = currentMovementInput.x * runMultiplier;
         currentRunMovement.z = currentMovementInput.y * runMultiplier;
         isMovementPressed = currentMovementInput.x != zero || currentMovementInput.y != zero;
@@ -179,15 +211,40 @@ public class PlayerController : MonoBehaviour
     {
         handleRotation();   
         handleAnimation();
-        if(isRunPressed)
+        /* if(isRunPressed)
+         {
+             characterController.Move(currentRunMovement * Time.deltaTime);
+            // Debug.Log("move-1");
+         } else
+         {
+            // Debug.Log("move-2");
+             characterController.Move(currentMovement * Time.deltaTime);    
+         }*/
+
+
+
+        /* Vector3 moveDirection = isRunPressed ? currentRunMovement : currentMovement;
+         Vector3 transformedDirection = transform.TransformDirection(moveDirection);*/
+
+        if (isRunPressed)
         {
-            characterController.Move(currentRunMovement * Time.deltaTime);
-            Debug.Log("move-1");
-        } else
-        {
-            Debug.Log("move-2");
-            characterController.Move(currentMovement * Time.deltaTime);    
+            Vector3 moveDirection_temp = orientation.right * currentRunMovement.x + orientation.forward * currentRunMovement.z;
+            Vector3 moveDirection = new Vector3(moveDirection_temp.x, currentRunMovement.y, moveDirection_temp.z);
+            Debug.Log(moveDirection);
+            characterController.Move(moveDirection * Time.deltaTime* speed);
         }
+        else
+        {
+            Vector3 moveDirection_temp = orientation.right * currentMovement.x + orientation.forward * currentMovement.z;
+            Vector3 moveDirection = new Vector3(moveDirection_temp.x, currentMovement.y, moveDirection_temp.z);
+            Debug.Log(moveDirection);
+            characterController.Move(moveDirection * Time.deltaTime* speed);
+        }
+       
+
+        
+
+
         handleGravity();
         handleJump();
     }
