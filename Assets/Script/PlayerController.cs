@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.UI;
 
 public class PlayerController : MonoBehaviour
 {
     PlayerInput playerInput;
-    CharacterController characterController;
-    Animator animator;
+    public CharacterController characterController;
+    public Animator animator;
 
 
     int isRunningHash;
@@ -15,7 +16,8 @@ public class PlayerController : MonoBehaviour
 
 
     Vector2 currentMovementInput;
-    Vector3 currentRunMovement; 
+    Vector3 currentRunMovement;
+
     bool isMovementPressed;
 
 
@@ -41,8 +43,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         playerInput = new PlayerInput();
-        characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+      
+      
 
 
         isRunningHash = Animator.StringToHash("isRunning");
@@ -68,7 +70,7 @@ public class PlayerController : MonoBehaviour
     {
         float timeToApex = maxJumpTime / 2;
         gravity = (-2 * maxJumpHeight) / Mathf.Pow(timeToApex, 2);
-        initialJumpVelocity = (2 * maxJumpHeight) / timeToApex;
+        initialJumpVelocity = ( maxJumpHeight) / timeToApex;
     }
 
     void handleJump()
@@ -78,13 +80,13 @@ public class PlayerController : MonoBehaviour
             animator.SetBool(isJumpingHash, true);
             isJumpingAnimating = true;
             isJumping = true;
-            float previousYVelocity = currentRunMovement.y;
-            float newYVelociy = currentRunMovement.y + initialJumpVelocity;
-            float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;
-            currentRunMovement.y = nextYVelocity;
-        
+            /* float previousYVelocity = currentRunMovement.y;
+             float newYVelociy = currentRunMovement.y + initialJumpVelocity;
+             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;*/
+            currentRunMovement.y = 10f;
 
-            
+          
+
 
         } else if (!isJumpPressed && isJumping && characterController.isGrounded)
         {
@@ -120,7 +122,7 @@ public class PlayerController : MonoBehaviour
         currentRunMovement.x = currentMovementInput.x ;
         currentRunMovement.z = currentMovementInput.y;
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
-        Debug.Log(isMovementPressed);
+        
     }
 
 
@@ -162,6 +164,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (isFalling)
         {
+            Debug.Log("rot");
             float previousYVelocity = currentRunMovement.y;
             float newYVelociy = currentRunMovement.y + (gravity * fallMultiplier * Time.deltaTime);
             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;
@@ -170,6 +173,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            Debug.Log("nhay");
             float previousYVelocity = currentRunMovement.y;
             float newYVelociy = currentRunMovement.y + (gravity * Time.deltaTime);
             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;
@@ -179,13 +183,15 @@ public class PlayerController : MonoBehaviour
     }
     private void handleMove()
     {
+        
         Vector3 moveDirection_temp = orientation.right * currentRunMovement.x + orientation.forward * currentRunMovement.z;
         Vector3 moveDirection = new Vector3(moveDirection_temp.x, currentRunMovement.y, moveDirection_temp.z);
 
-        if (isMovementPressed)
-        {
-            characterController.Move(moveDirection * Time.deltaTime * speed);
-        }
+        moveDirection = new Vector3(moveDirection.x * speed, moveDirection.y, moveDirection.z * speed);
+
+        characterController.Move(moveDirection * Time.deltaTime);
+        
+        
        
     }
     private void Update()
