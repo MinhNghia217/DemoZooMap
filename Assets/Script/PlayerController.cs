@@ -80,9 +80,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool(isJumpingHash, true);
             isJumpingAnimating = true;
             isJumping = true;
-            /* float previousYVelocity = currentRunMovement.y;
-             float newYVelociy = currentRunMovement.y + initialJumpVelocity;
-             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;*/
+
             currentRunMovement.y = 10f;
 
           
