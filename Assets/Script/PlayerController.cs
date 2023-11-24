@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (isFalling)
         {
-            Debug.Log("rot");
+           
             float previousYVelocity = currentRunMovement.y;
             float newYVelociy = currentRunMovement.y + (gravity * fallMultiplier * Time.deltaTime);
             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;
@@ -171,7 +171,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Debug.Log("nhay");
+          
             float previousYVelocity = currentRunMovement.y;
             float newYVelociy = currentRunMovement.y + (gravity * Time.deltaTime);
             float nextYVelocity = (previousYVelocity + newYVelociy) * .5f;
