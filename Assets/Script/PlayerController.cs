@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
 
     public  Transform orientation;
     public float speed;
+    public float jump;
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -81,10 +82,7 @@ public class PlayerController : MonoBehaviour
             isJumpingAnimating = true;
             isJumping = true;
 
-            currentRunMovement.y = 10f;
-
-          
-
+            currentRunMovement.y = jump;
 
         } else if (!isJumpPressed && isJumping && characterController.isGrounded)
         {
@@ -113,10 +111,6 @@ public class PlayerController : MonoBehaviour
     private void onMovementInput (InputAction.CallbackContext context)
     {
         currentMovementInput = context.ReadValue<Vector2>();
-
-  
-        //Debug.Log(currentMovement.x + "/" + currentMovement.z);
-
         currentRunMovement.x = currentMovementInput.x ;
         currentRunMovement.z = currentMovementInput.y;
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
@@ -152,7 +146,7 @@ public class PlayerController : MonoBehaviour
 
         if(characterController.isGrounded)
         {
-
+            
             if (isJumpingAnimating)
             {
                 animator.SetBool("isJumping", false);
@@ -182,10 +176,10 @@ public class PlayerController : MonoBehaviour
     private void handleMove()
     {
         
-        Vector3 moveDirection_temp = orientation.right * currentRunMovement.x + orientation.forward * currentRunMovement.z;
-        Vector3 moveDirection = new Vector3(moveDirection_temp.x, currentRunMovement.y, moveDirection_temp.z);
+        Vector3 moveDirection_temp = orientation.right * currentRunMovement.x + orientation.forward *currentRunMovement.z;
+        Vector3 moveDirection = new Vector3(moveDirection_temp.x * speed, currentRunMovement.y, moveDirection_temp.z * speed);
 
-        moveDirection = new Vector3(moveDirection.x * speed, moveDirection.y, moveDirection.z * speed);
+        
 
         characterController.Move(moveDirection * Time.deltaTime);
         
@@ -197,10 +191,7 @@ public class PlayerController : MonoBehaviour
         handleRotation();   
         handleAnimation();
 
-
         handleMove();
-
-
 
 
         handleGravity();
