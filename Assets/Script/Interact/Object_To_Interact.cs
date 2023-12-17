@@ -11,7 +11,7 @@ public class Object_To_Interact : MonoBehaviour, IInteractTable
 
     public bool Interact(Interactor interactor)
     {
-        Debug.Log("Cham cai dit me may");
+        Debug.Log(_prompt);
         return true;    
     }
 }
