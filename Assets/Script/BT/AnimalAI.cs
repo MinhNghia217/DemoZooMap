@@ -2,32 +2,36 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class AnimalAI : MonoBehaviour
 {
+    private NavMeshAgent agent;
+
     public Transform rootTranform;
     private Node topNode;
     public Transform player;
     // Start is called before the first frame update
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
         //rootTranform = transform;
         ConstructBehahaviourTree();
     }
 
     private void ConstructBehahaviourTree()
     {
-        ChaseNode chaseNode = new ChaseNode(player, this);
+        ChaseNode chaseNode = new ChaseNode(player, this, agent);
         RangeNode chasingRangeNode = new RangeNode(10f, player, transform);
+        RotationNode rotationNode = new RotationNode(this,player);
+        ChaseNode GobackNode = new ChaseNode(rootTranform, this, agent);
 
-        Sequence chaseSequence = new Sequence(new List<Node> { chasingRangeNode, chaseNode });
 
-        ChaseNode GobackNode = new ChaseNode(rootTranform, this);
-       // Inverter inverterRangeNode = new Inverter(chasingRangeNode);
+        Sequence chaseSequence = new Sequence(new List<Node> { chasingRangeNode, rotationNode, chaseNode });
+        Selector GoBack = new Selector(new List<Node> { GobackNode, rotationNode });
+     
 
-       // Selector gobackSequence = new Selector(new List<Node> { inverterRangeNode, GobackNode });
-
-        topNode = new Selector(new List<Node> { chaseSequence, GobackNode });
+        topNode = new Selector(new List<Node> { chaseSequence, GoBack });
     }
 
  

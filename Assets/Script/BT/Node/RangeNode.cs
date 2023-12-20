@@ -18,7 +18,8 @@ public class RangeNode : Node
 
     public override NodeState Evaluate()
     {
-        float distance = Vector3.Distance(target.position, origin.position);
+        Vector3 tempTarget = new Vector3(target.position.x, origin.position.y, target.position.z);
+        float distance = Vector3.Distance(tempTarget, origin.position);
         
         return distance <= range ? NodeState.SUCCESS : NodeState.FAILURE;
     }
