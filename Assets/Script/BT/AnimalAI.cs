@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class AnimalAI : MonoBehaviour
 {
     private NavMeshAgent agent;
-
+    public float ranger = 20f;
     public Transform rootTranform;
     private Node topNode;
     public Transform player;
@@ -22,7 +22,7 @@ public class AnimalAI : MonoBehaviour
     private void ConstructBehahaviourTree()
     {
         ChaseNode chaseNode = new ChaseNode(player, this, agent);
-        RangeNode chasingRangeNode = new RangeNode(10f, player, transform);
+        RangeNode chasingRangeNode = new RangeNode(ranger, player, transform);
         RotationNode rotationNode = new RotationNode(this,player);
         ChaseNode GobackNode = new ChaseNode(rootTranform, this, agent);
 
