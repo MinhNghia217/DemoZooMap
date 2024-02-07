@@ -16,22 +16,38 @@ public class ChaseNode : Node
     }
     public override NodeState Evaluate()
     {
-       
-        float distance = Vector3.Distance(target.position, AnimalAI.transform.position);
-    
-        if (distance > 0.2f)
+        if (target == null)
         {
-            agent.isStopped = false;
-            agent.SetDestination(target.position);
-   
-            return NodeState.RUNNING;
+            return NodeState.FAILURE;
         }
-        else
+
+        agent.SetDestination(target.position);
+        AnimalAI.state = STATE.run;
+        Debug.Log(target.gameObject.ToString());
+        if (Vector3.Distance(AnimalAI.transform.position, target.position) <= agent.stoppingDistance)
         {
-            agent.isStopped = true;
             return NodeState.SUCCESS;
         }
-    }
 
+        return NodeState.RUNNING;
+    }
+    /*float distance = Vector3.Distance(target.position, AnimalAI.transform.position);
+
+    if (distance <= agent.stoppingDistance)
+    {
+        agent.isStopped = true;
+        return NodeState.SUCCESS;
+    }
+    else
+    {
+
+        agent.isStopped = false;
+        agent.SetDestination(target.position);
+        Debug.Log(target.gameObject.ToString());
+        return NodeState.FAILURE;
+    }*/
 
 }
+
+
+
