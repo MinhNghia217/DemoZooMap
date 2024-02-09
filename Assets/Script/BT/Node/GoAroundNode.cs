@@ -1,47 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
+using WUG.BehaviorTreeVisualizer;
 
 public class GoAroundNode : Node
 {
-    private AnimalAI animalAI;
-    private List<Transform>  targets;
-    private NavMeshAgent agent;
-    //---Flag---
-    private int currentTargetIndex=0;
-    public GoAroundNode(List<Transform> targets, NavMeshAgent agent, AnimalAI animalAI)
+    //----parameter
+    private List<Transform> targets;
+    private AnimalController animalController;
+    //----local
+    protected NavMeshAgent agen;
+    protected int indexTargets = 0;
+    protected Transform transAnimal;
+    public GoAroundNode(List<Transform> targets, AnimalController animalController)
     {
         this.targets = targets;
-        this.agent = agent;
-        this.animalAI = animalAI;
-
-        currentTargetIndex = 0;
+        this.animalController = animalController;
+        Init();
     }
-    public override NodeState Evaluate()
+    protected void Init()
+    {
+        transAnimal = animalController.gameObject.transform;
+        agen = animalController.MyNavMesh;
+    }
+
+    protected override void OnReset() { 
+    }
+
+    protected override NodeStatus OnRun()
     {
         if (targets.Count == 0)
         {
-            return NodeState.FAILURE;
+            return NodeStatus.Failure;
         }
-        Transform target = targets[currentTargetIndex];
-        agent.SetDestination(targets[currentTargetIndex].position);
-        Debug.Log("run");
-        animalAI.state = STATE.run;
-
-        if (Vector3.Distance(animalAI.transform.position, target.position) <= agent.stoppingDistance)
+        Transform target = targets[indexTargets];
+        agen.SetDestination(targets[indexTargets].position);
+        float distance = Vector3.Distance(target.position, transAnimal.position);//distane from now - targets[i]
+        if (distance <= agen.stoppingDistance)
         {
-            Debug.Log("touch");
-            currentTargetIndex++;
-            if (currentTargetIndex >= targets.Count)
+            indexTargets++;
+            if (indexTargets >= targets.Count)
             {
-                currentTargetIndex = 0;
-                return NodeState.SUCCESS;
+                indexTargets = 0;
+                return NodeStatus.Success;
             }
         }
-
-
-        return NodeState.RUNNING;
+        return NodeStatus.Success;
     }
 }
