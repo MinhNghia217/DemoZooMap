@@ -4,14 +4,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using WUG.BehaviorTreeVisualizer;
 
-public class GoToTargetNode : Condition
+public class GoToTargetNode : Node
 {
-    private NavigationActivity m_ActivityToCheckFor;
     private NavMeshAgent agen;
     private Transform target;
-    public GoToTargetNode(NavigationActivity activity, NavMeshAgent agen, Transform target) : base($"Is Navigation Activity {activity}?")
+    public GoToTargetNode( NavMeshAgent agen, Transform target) 
     {
-        m_ActivityToCheckFor = activity;
         this.agen = agen;
         this.target = target;
     }
