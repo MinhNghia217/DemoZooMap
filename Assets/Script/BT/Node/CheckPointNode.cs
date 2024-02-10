@@ -5,18 +5,19 @@ using WUG.BehaviorTreeVisualizer;
 
 public class CheckPointNode : Node
 {
-    private bool Checking;
+    private ConfigAnimal configAnimal;
 
-    public CheckPointNode(bool checking)
+    public CheckPointNode(ConfigAnimal configAnimal)
     {
-        this.Checking = checking;
+        this.configAnimal = configAnimal;
     }
 
     protected override void OnReset(){}
 
     protected override NodeStatus OnRun()
     {
-        if (Checking) return NodeStatus.Success;
+        
+        if (configAnimal.CanInteract) return NodeStatus.Success;
         else return NodeStatus.Failure;
     }
 }

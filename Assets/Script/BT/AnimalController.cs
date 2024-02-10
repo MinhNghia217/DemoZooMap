@@ -36,7 +36,7 @@ public class AnimalController : MonoBehaviour, IBehaviorTree
        
 
         //Init Function
-        GenerateBehaviorTree();
+            GenerateBehaviorTree();
         pointInteract.OnEnterTrigger += PointInteract_OnEnterTrigger;
         pointInteract.OnExitTrigger += PointInteract_OnExitTrigger;
 
@@ -45,6 +45,7 @@ public class AnimalController : MonoBehaviour, IBehaviorTree
         {
             m_BehaviorTreeRoutine = StartCoroutine(RunBehaviorTree());
         }
+
     }
 
     
@@ -54,21 +55,24 @@ public class AnimalController : MonoBehaviour, IBehaviorTree
     private void GenerateBehaviorTree()
     {
         BehaviorTree = new Selector("ROOT ANIMAL",
-         //MOVE TO PLAYER IF IN RANGE || GO AROUND 
-        /* new Sequence("MOVE TO PLAYER",
-                    new InRangeNode(rangerFollowPlayer, this, player),
-                    new GoToTargetNode( MyNavMesh, player)),
-            new GoAroundNode(TargetsMove, this)*/
-
 
             // COMTO PLAYER -> IDLE ANIMATION
             new Sequence("COME TO PLAYER",
-                new CheckPointNode(configAnimal.CanInteract),
+                new CheckPointNode(configAnimal),
                 new Selector("MOVE",
                     new Sequence("CHECK ARRIVED",
                         new GoToTargetNode(MyNavMesh, TargetsMove[0]),
-                            new AnimationNode(animator,"idle")),
-                    new AnimationNode(animator, "walk_forward"))));
+                            new AnimationNode(animator, "idle")),
+                    new AnimationNode(animator, "walk_forward"))),
+
+        //MOVE TO PLAYER IF IN RANGE || GO AROUND 
+            new Sequence("MOVE TO PLAYER",
+                    new InRangeNode(rangerFollowPlayer, this, player),
+                    new GoToTargetNode(MyNavMesh, player)),
+            new GoAroundNode(TargetsMove, this));
+
+
+
     }
     #endregion
 
